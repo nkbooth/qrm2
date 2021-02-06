@@ -87,6 +87,7 @@ class GLAARGCog(commands.Cog):
             veApprovedDate = datetime.date(datetime.strptime(veCallData["veApprovedDate"], '%Y-%m-%dT%H:%M:%S.%fZ'))
             veAccreditationExpires = datetime.date(datetime.strptime(veCallData["veAccreditationExpires"], '%Y-%m-%dT%H:%M:%S.%fZ'))
             veSessionCount = veCallData["sessionCount"]
+
             # Return results
             embed.title = f"Results for {veCallResults}"
             embed.description = f"Current GLAARG-VEC status for this call sign:"
@@ -102,30 +103,61 @@ class GLAARGCog(commands.Cog):
 
         return
 
-#    @commands.command(name="nombre", aliases=["search", "lookup"], category=cmn.cat.lookup)
-#    async def _number_lookup(self, ctx: commands.Context, veName: str = ""):
-#        """Gets search results by VE Name lookup."""
-#        with ctx.typing():
-#            embed = cmn.embed_factory(ctx)
-#
-#            async with self.session.get(f"http://glaarglookup.n1cck.com:5000/ve?veName={veName}") as resp:
-#                if resp.status != 200:
-#                    raise cmn.BotHTTPError(resp)
-#                veCallData = json.loads(await resp.read())
-#
-#            embed.title = f"Name search results for {veName}."
-#            embed.colour = discord.Colour.gold()
-#            embed.description = f"Possible VEs matching your search"
-#
-#            for key in veCallData:
-#                calls = ", ".join(veCallData["veCallSign"])
-#                nums = ", ".join(veCallData["veNumber"])
-#                embed.add_field(name=f"**Call Sign**: {veCallSign}", value=f"**Number**: {veNumber}", inline=False)
-#
-#            await ctx.send(embed=embed)
-#
-#        return
-#                
+    @commands.command(name="name", aliases=["search", "lookup", "find"], category=cmn.cat.lookup)
+    async def _name_lookup(self, ctx: commands.Context, veName: str = ""):
+        """Gets search results by VE Name lookup."""
+        with ctx.typing():
+            embed = cmn.embed_factory(ctx)
+
+            async with self.session.get(f"http://glaarglookup.n1cck.com:5000/ve?veName={veName}") as resp:
+                if resp.status != 200:
+                    raise cmn.BotHTTPError(resp)
+                veCallData = json.loads(await resp.read())
+
+            embed.title = f"Name search results for {veName}."
+            embed.colour = discord.Colour.gold()
+            embed.description = f"Possible VEs matching your search '{veName}'"
+
+#            print(veCallData)
+
+            i=0
+#            var calls = ''
+#            var numbers = ''
+
+            for veNumber in veCallData:
+                veCallTemp = veCallData[i]['veCallSign']
+                veNumberTemp = veCallData[i]['veNumber']
+                veFullNameTemp = veCallData[i]['veFullName']
+                if i==0:
+                    descript = f"**Possible VEs matching your search**: '{veName}'\r\n\r\n{veFullNameTemp} - {veCallTemp} - {veNumberTemp}\r\n"
+                else:
+                    descript = descript + f"{veFullNameTemp} - {veCallTemp} - {veNumberTemp}\r\n"
+                i=i+1
+            embed.description = descript
+
+
+
+
+#                if i==0:
+#                    calls = veCallData[i]['veCallSign']
+#                    numbers = veCallData[i]['veNumber']
+#                else:
+#                    calls = calls + ', ' + veCallData[i]['veCallSign']
+#                    numbers = numbers + ', ' + veCallData[i]['veNumber']
+#                i=i+1
+            
+#            embed.add_field(name=f"**Call Signs**:", value=f"{calls}")
+#            embed.add_field(name=f"**VE Numbers**:", value=f"{numbers}")
+
+
+            if len(descript) > 2045:
+                embed.description = f"**Too many results for {veName}; try a narrower search**"
+                embed.title = f"***Error***"
+            
+            await ctx.send(embed=embed)
+
+        return
+                
 
 ###################################################################################################
 #                                                                                                 #
