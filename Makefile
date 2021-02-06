@@ -11,8 +11,8 @@
 ### Variables ###
 # Those are the defaults; they can be over-ridden if specified
 # at en environment level or as 'make' arguments.
-BOTENV ?= botenv
-PYTHON_BIN ?= python3.7
+BOTENV ?= glaargbot
+PYTHON_BIN ?= python3
 PIP_OUTPUT ?= -q
 
 
