@@ -54,7 +54,7 @@ class GLAARGCog(commands.Cog):
             embed.colour = discord.Colour.gold()
             
             if veCallData["veCallSign"] == '':
-                embed.description = f"No results found for {veCall}
+                embed.description = f"No results found for {veCall}"
             else:
                 embed.description = f"Current GLAARG-VEC status for this call sign:"
                 embed.add_field(name=f"**Name**", value=f"{vePreferredName}")
