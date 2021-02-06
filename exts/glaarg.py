@@ -23,7 +23,7 @@ import common as cmn
 from resources import study
 
 
-class GLAARGCog(commands.Cog):
+class GLAARG(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.source = "Data from the ![GLAARG-VEC](http://glaarg.org) current accreditation rolls."
@@ -346,4 +346,4 @@ class GLAARGCog(commands.Cog):
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(GLAARGCog(bot))
+    bot.add_cog(GLAARG(bot))

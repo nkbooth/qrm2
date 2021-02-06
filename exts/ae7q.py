@@ -24,7 +24,7 @@ import discord.ext.commands as commands
 import common as cmn
 
 
-class AE7QCog(commands.Cog):
+class AE7Q(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.session = aiohttp.ClientSession(connector=bot.qrm.connector)
@@ -393,4 +393,4 @@ async def process_table(table: list):
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(AE7QCog(bot))
+    bot.add_cog(AE7Q(bot))

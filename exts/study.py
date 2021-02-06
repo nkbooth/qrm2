@@ -21,7 +21,7 @@ import common as cmn
 from resources import study
 
 
-class StudyCog(commands.Cog):
+class Study(commands.Cog):
     choices = {cmn.emojis.a: "A", cmn.emojis.b: "B", cmn.emojis.c: "C", cmn.emojis.d: "D"}
 
     def __init__(self, bot: commands.Bot):
@@ -195,4 +195,4 @@ class StudyCog(commands.Cog):
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(StudyCog(bot))
+    bot.add_cog(Study(bot))
