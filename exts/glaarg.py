@@ -42,12 +42,12 @@ class GLAARGCog(commands.Cog):
                 veCallData = json.loads(await resp.read())
             
             
-            if veCallData["type"] == '200':
-                embed.description = f"No results found for {veCall}"
+            if 'veCallSign' not in veCallData:
+                embed.description = f"No results found for {veCall}.  Please veriy and try again."
                 embed.title = f"Results for {veCall}"
                 embed.colour = discord.Colour.gold()
                 
-            else:    
+            if 'veCallSign' in veCallData:    
 
                 veCallResults = veCallData["veCallSign"]
                 vePreferredName = veCallData["vePreferredName"]
@@ -86,10 +86,10 @@ class GLAARGCog(commands.Cog):
             embed.title = f"Results for {veNumber}"
             embed.colour = discord.Colour.gold()
             
-            if veCallData['type'] == '200':
-                embed.description = f"No results found for {veNumber}"
+            if 'veNumber' not in veCallData:
+                embed.description = f"No results found for {veNumber}.  Make sure you are searching in format XXXXE"
 
-            else:
+            elif 'veNumber' in veCallData:
                 veCallResults = veCallData["veCallSign"]
                 vePreferredName = veCallData["vePreferredName"]
                 veNumber = veCallData["veNumber"]
