@@ -42,20 +42,23 @@ class GLAARGCog(commands.Cog):
                 veCallData = json.loads(await resp.read())
             
             
-
-            veCallResults = veCallData["veCallSign"]
-            vePreferredName = veCallData["vePreferredName"]
-            veNumber = veCallData["veNumber"]
-            veApprovedDate = datetime.date(datetime.strptime(veCallData["veApprovedDate"], '%Y-%m-%dT%H:%M:%S.%fZ'))
-            veAccreditationExpires = datetime.date(datetime.strptime(veCallData["veAccreditationExpires"], '%Y-%m-%dT%H:%M:%S.%fZ'))
-            veSessionCount = veCallData["sessionCount"]
-            
-            embed.title = f"Results for {veCall}"
-            embed.colour = discord.Colour.gold()
-            
-            if veCallData["veCallSign"] == '':
+            if veCallData["type"] == '200':
                 embed.description = f"No results found for {veCall}"
-            else:
+                embed.title = f"Results for {veCall}"
+                embed.colour = discord.Colour.gold()
+                
+            else:    
+
+                veCallResults = veCallData["veCallSign"]
+                vePreferredName = veCallData["vePreferredName"]
+                veNumber = veCallData["veNumber"]
+                veApprovedDate = datetime.date(datetime.strptime(veCallData["veApprovedDate"], '%Y-%m-%dT%H:%M:%S.%fZ'))
+                veAccreditationExpires = datetime.date(datetime.strptime(veCallData["veAccreditationExpires"], '%Y-%m-%dT%H:%M:%S.%fZ'))
+                veSessionCount = veCallData["sessionCount"]
+            
+                embed.title = f"Results for {veCall}"
+                embed.colour = discord.Colour.gold()
+             
                 embed.description = f"Current GLAARG-VEC status for this call sign:"
                 embed.add_field(name=f"**Name**", value=f"{vePreferredName}")
                 embed.add_field(name=f"**VE Number**", value=f"{veNumber}")
@@ -80,25 +83,28 @@ class GLAARGCog(commands.Cog):
                     raise cmn.BotHTTPError(resp)
                 veCallData = json.loads(await resp.read())
 
+            embed.title = f"Results for {veNumber}"
+            embed.colour = discord.Colour.gold()
+            
+            if veCallData['type'] == '200':
+                embed.description = f"No results found for {veNumber}"
 
-
-            veCallResults = veCallData["veCallSign"]
-            vePreferredName = veCallData["vePreferredName"]
-            veNumber = veCallData["veNumber"]
-            veApprovedDate = datetime.date(datetime.strptime(veCallData["veApprovedDate"], '%Y-%m-%dT%H:%M:%S.%fZ'))
-            veAccreditationExpires = datetime.date(datetime.strptime(veCallData["veAccreditationExpires"], '%Y-%m-%dT%H:%M:%S.%fZ'))
-            veSessionCount = veCallData["sessionCount"]
+            else:
+                veCallResults = veCallData["veCallSign"]
+                vePreferredName = veCallData["vePreferredName"]
+                veNumber = veCallData["veNumber"]
+                veApprovedDate = datetime.date(datetime.strptime(veCallData["veApprovedDate"], '%Y-%m-%dT%H:%M:%S.%fZ'))
+                veAccreditationExpires = datetime.date(datetime.strptime(veCallData["veAccreditationExpires"], '%Y-%m-%dT%H:%M:%S.%fZ'))
+                veSessionCount = veCallData["sessionCount"]
 
             # Return results
-            embed.title = f"Results for {veCallResults}"
-            embed.description = f"Current GLAARG-VEC status for this call sign:"
-            embed.colour = discord.Colour.gold()
-            embed.add_field(name=f"**Name**", value=f"{vePreferredName}")
-            embed.add_field(name=f"**VE Number**", value=f"{veNumber}")
-            embed.add_field(name=f"**Call Sign**", value=f"{veCallResults}")
-            embed.add_field(name=f"**VE Since**", value=f"{veApprovedDate}")
-            embed.add_field(name=f"**Accreditation Expires**", value=f"{veAccreditationExpires}")
-#            embed.add_field(name=f"**Session Count**", value=f"{veSessionCount}")
+                embed.description = f"Current GLAARG-VEC status for this call sign:"
+                embed.add_field(name=f"**Name**", value=f"{vePreferredName}")
+                embed.add_field(name=f"**VE Number**", value=f"{veNumber}")
+                embed.add_field(name=f"**Call Sign**", value=f"{veCallResults}")
+                embed.add_field(name=f"**VE Since**", value=f"{veApprovedDate}")
+                embed.add_field(name=f"**Accreditation Expires**", value=f"{veAccreditationExpires}")
+#                embed.add_field(name=f"**Session Count**", value=f"{veSessionCount}")
  
             await ctx.send(embed=embed)
 
