@@ -17,6 +17,7 @@ import asyncio
 import aiohttp
 
 import discord.ext.commands as commands
+import discord
 
 import common as cmn
 from resources import study
@@ -25,11 +26,12 @@ from resources import study
 class GLAARGCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        self.source = "Data from the [GLAARG-VEC](http://glaarg.org) current accreditation rolls."
+        self.source = "Data from the ![GLAARG-VEC](http://glaarg.org) current accreditation rolls."
         self.session = aiohttp.ClientSession(connector=bot.qrm.connector)
+
     @commands.command(name="call", aliases=["c", "callsign"], category=cmn.cat.lookup)
     async def _callsign_lookup(self, ctx: commands.Context, veCall: str = ""):
-        """Gets information from the [GLAARG-VEC](http://glaarg.org) database by VE callsign."""
+        """Gets information from the ![GLAARG-VEC](http://glaarg.org) database by VE callsign."""
         with ctx.typing():
             embed = cmn.embed_factory(ctx)
             veCall = veCall.upper()
@@ -47,25 +49,83 @@ class GLAARGCog(commands.Cog):
             veApprovedDate = datetime.date(datetime.strptime(veCallData["veApprovedDate"], '%Y-%m-%dT%H:%M:%S.%fZ'))
             veAccreditationExpires = datetime.date(datetime.strptime(veCallData["veAccreditationExpires"], '%Y-%m-%dT%H:%M:%S.%fZ'))
             veSessionCount = veCallData["sessionCount"]
+            
+
+
             # Return results
             embed.title = f"Results for {veCall}"
             embed.description = f"Current GLAARG-VEC status for this call sign:"
-            embed.colour = cmn.colours.bad
+            embed.colour = discord.Colour.gold()
             embed.add_field(name=f"**Name**", value=f"{vePreferredName}")
             embed.add_field(name=f"**Number**", value=f"{veNumber}")
-            embed.add_field(name=f"**Call Sign**", value=f"{veCall}")
+            embed.add_field(name=f"**Call Sign**", value=f"{veCallResults}")
             embed.add_field(name=f"**VE Since**", value=f"{veApprovedDate}")
             embed.add_field(name=f"**Accreditation Expires**", value=f"{veAccreditationExpires}")
             embed.add_field(name=f"**Session Count**", value=f"{veSessionCount}")
+            
 
             await ctx.send(embed=embed)
 
         return
 
+    @commands.command(name="number", aliases=["n", "num"], category=cmn.cat.lookup)
+    async def _number_lookup(self, ctx: commands.Context, veNumber: str = ""):
+        """Gets information from the [GLAARG-VEC]!(http://glaarg.org) database by VE number."""
+        with ctx.typing():
+            embed = cmn.embed_factory(ctx)
+
+            async with self.session.get(f"http://glaarglookup.n1cck.com:5000/ve?veNumber={veNumber}") as resp:
+                if resp.status != 200:
+                    raise cmn.BotHTTPError(resp)
+                veCallData = json.loads(await resp.read())
 
 
 
+            veCallResults = veCallData["veCallSign"]
+            vePreferredName = veCallData["vePreferredName"]
+            veNumber = veCallData["veNumber"]
+            veApprovedDate = datetime.date(datetime.strptime(veCallData["veApprovedDate"], '%Y-%m-%dT%H:%M:%S.%fZ'))
+            veAccreditationExpires = datetime.date(datetime.strptime(veCallData["veAccreditationExpires"], '%Y-%m-%dT%H:%M:%S.%fZ'))
+            veSessionCount = veCallData["sessionCount"]
+            # Return results
+            embed.title = f"Results for {veCallResults}"
+            embed.description = f"Current GLAARG-VEC status for this call sign:"
+            embed.colour = discord.Colour.gold()
+            embed.add_field(name=f"**Name**", value=f"{vePreferredName}")
+            embed.add_field(name=f"**Number**", value=f"{veNumber}")
+            embed.add_field(name=f"**Call Sign**", value=f"{veCallResults}")
+            embed.add_field(name=f"**VE Since**", value=f"{veApprovedDate}")
+            embed.add_field(name=f"**Accreditation Expires**", value=f"{veAccreditationExpires}")
+            embed.add_field(name=f"**Session Count**", value=f"{veSessionCount}")
+ 
+            await ctx.send(embed=embed)
 
+        return
+
+#    @commands.command(name="nombre", aliases=["search", "lookup"], category=cmn.cat.lookup)
+#    async def _number_lookup(self, ctx: commands.Context, veName: str = ""):
+#        """Gets search results by VE Name lookup."""
+#        with ctx.typing():
+#            embed = cmn.embed_factory(ctx)
+#
+#            async with self.session.get(f"http://glaarglookup.n1cck.com:5000/ve?veName={veName}") as resp:
+#                if resp.status != 200:
+#                    raise cmn.BotHTTPError(resp)
+#                veCallData = json.loads(await resp.read())
+#
+#            embed.title = f"Name search results for {veName}."
+#            embed.colour = discord.Colour.gold()
+#            embed.description = f"Possible VEs matching your search"
+#
+#            for key in veCallData:
+#                calls = ", ".join(veCallData["veCallSign"])
+#                nums = ", ".join(veCallData["veNumber"])
+#                embed.add_field(name=f"**Call Sign**: {veCallSign}", value=f"**Number**: {veNumber}", inline=False)
+#
+#            await ctx.send(embed=embed)
+#
+#        return
+#                
 
 ###################################################################################################
 #                                                                                                 #

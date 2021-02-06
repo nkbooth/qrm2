@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/sh
 
 # A wrapper script for painless discord bots.
 # v1.2.0
@@ -10,9 +10,9 @@
 
 # If $BOTENV is not defined, default to 'botenv'
 if [ -z "$BOTENV" ]; then
-    BOTENV='botenv'
+    BOTENV='glaargbot'
 fi
-
+PYTHON_BIN='/usr/bin/python3'
 
 # Argument handling
 _PASS_ERRORS=0
@@ -36,7 +36,7 @@ done
 
 # If $PYTHON_BIN is not defined, default to 'python3.7'
 if [ $_NO_BOTENV -eq 1 -a -z "$PYTHON_BIN" ]; then
-    PYTHON_BIN='python3.7'
+    PYTHON_BIN='/usr/bin/python3'
 fi
 
 
@@ -65,6 +65,8 @@ code_handling() {
 
 
 echo "$0: Starting bot..."
+echo "python bin = "
+echo "$PYTHON_BIN"
 
 # The loop
 while true; do
