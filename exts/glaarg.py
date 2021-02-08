@@ -125,12 +125,8 @@ class GLAARG(commands.Cog):
             embed.colour = discord.Colour.gold()
             embed.description = f"Possible VEs matching your search '{veName}'"
 
-#            print(veCallData)
 
             i=0
-#            var calls = ''
-#            var numbers = ''
-
             for veNumber in veCallData:
                 veCallTemp = veCallData[i]['veCallSign']
                 veNumberTemp = veCallData[i]['veNumber']
@@ -143,20 +139,6 @@ class GLAARG(commands.Cog):
             embed.description = descript
 
 
-
-
-#                if i==0:
-#                    calls = veCallData[i]['veCallSign']
-#                    numbers = veCallData[i]['veNumber']
-#                else:
-#                    calls = calls + ', ' + veCallData[i]['veCallSign']
-#                    numbers = numbers + ', ' + veCallData[i]['veNumber']
-#                i=i+1
-            
-#            embed.add_field(name=f"**Call Signs**:", value=f"{calls}")
-#            embed.add_field(name=f"**VE Numbers**:", value=f"{numbers}")
-
-
             if len(descript) > 2045:
                 embed.description = f"**Too many results for {veName}; try a narrower search**"
                 embed.title = f"***Error***"
@@ -164,7 +146,42 @@ class GLAARG(commands.Cog):
             await ctx.send(embed=embed)
 
         return
-                
+
+
+    @commands.command(name="sessions", aliases=["ses", "session", "listing"], category=cmn.cat.lookup)
+    async def _stats_lookup(self, ctx: commands.Context, veCallSign: str = ""):
+        """Gets listing of sessions for a given call sign"""
+        with ctx.typing():
+            embed = cmn.embed_factory(ctx)
+
+            async with self.session.get(f"http://glaarglookup.n1cck.com:5000/ve?veSessions={veCallSign}") as resp:
+                if resp.status != 200:
+                    raise cmn.BotHTTPError(resp)
+                veSessions = json.loads(await resp.read())
+
+            embed.title = f"Listing of sessions for {veCallSign}."
+            embed.colour = discord.Colour.gold()
+            embed.description = f"**Listing of sessions**\r\n\r\n"
+
+            i=0
+            for sessionManagerCall in veSessions:
+                sessionDateTemp = datetime.date(datetime.strptime(veSessions[i]['sessionDate'], '%Y-%m-%dT%H:%M:%S.%fZ'))
+                sessionManagerTemp = veSessions[i]['sessionManagerCall']
+                if i==0:
+                    descript = f"**Listing of sessions**\r\n\r\n{sessionDateTemp} - {sessionManagerTemp}\r\n"
+                else:
+                    descript = descript + f"{sessionDateTemp} - {sessionManagerTemp}\r\n"
+                i=i+1
+            embed.description = descript
+
+            if len(descript) > 2045:
+                embed.description = f"**Too many sessions. Contact Nick N1CCK for a full listing**"
+                embed.title = f"***Error***"
+
+            await ctx.send(embed=embed)
+
+
+ 
 
 ###################################################################################################
 #                                                                                                 #
