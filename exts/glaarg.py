@@ -65,7 +65,7 @@ class GLAARG(commands.Cog):
                 embed.add_field(name=f"**Call Sign**", value=f"{veCallResults}")
                 embed.add_field(name=f"**VE Since**", value=f"{veApprovedDate}")
                 embed.add_field(name=f"**Accreditation Expires**", value=f"{veAccreditationExpires}")
-#                embed.add_field(name=f"**Session Count**", value=f"{veSessionCount}")
+                embed.add_field(name=f"**Session Count**", value=f"{veSessionCount}")
             
 
             await ctx.send(embed=embed)
@@ -104,7 +104,7 @@ class GLAARG(commands.Cog):
                 embed.add_field(name=f"**Call Sign**", value=f"{veCallResults}")
                 embed.add_field(name=f"**VE Since**", value=f"{veApprovedDate}")
                 embed.add_field(name=f"**Accreditation Expires**", value=f"{veAccreditationExpires}")
-#                embed.add_field(name=f"**Session Count**", value=f"{veSessionCount}")
+                embed.add_field(name=f"**Session Count**", value=f"{veSessionCount}")
  
             await ctx.send(embed=embed)
 
