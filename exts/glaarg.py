@@ -51,6 +51,7 @@ class GLAARG(commands.Cog):
 
                 veCallResults = veCallData["veCallSign"]
                 vePreferredName = veCallData["vePreferredName"]
+                veFullName = veCallData["veFullName"]
                 veNumber = veCallData["veNumber"]
                 veApprovedDate = datetime.date(datetime.strptime(veCallData["veApprovedDate"], '%Y-%m-%dT%H:%M:%S.%fZ'))
                 veAccreditationExpires = datetime.date(datetime.strptime(veCallData["veAccreditationExpires"], '%Y-%m-%dT%H:%M:%S.%fZ'))
@@ -60,7 +61,7 @@ class GLAARG(commands.Cog):
                 embed.colour = discord.Colour.gold()
              
                 embed.description = f"Current GLAARG-VEC status for this call sign:"
-                embed.add_field(name=f"**Name**", value=f"{vePreferredName}")
+                embed.add_field(name=f"**Name**", value=f"{veFullName} ({vePreferredName})")
                 embed.add_field(name=f"**VE Number**", value=f"{veNumber}")
                 embed.add_field(name=f"**Call Sign**", value=f"{veCallResults}")
                 embed.add_field(name=f"**VE Since**", value=f"{veApprovedDate}")
@@ -93,13 +94,14 @@ class GLAARG(commands.Cog):
                 veCallResults = veCallData["veCallSign"]
                 vePreferredName = veCallData["vePreferredName"]
                 veNumber = veCallData["veNumber"]
+                veFullName = veCallData["veFullName"]
                 veApprovedDate = datetime.date(datetime.strptime(veCallData["veApprovedDate"], '%Y-%m-%dT%H:%M:%S.%fZ'))
                 veAccreditationExpires = datetime.date(datetime.strptime(veCallData["veAccreditationExpires"], '%Y-%m-%dT%H:%M:%S.%fZ'))
                 veSessionCount = veCallData["sessionCount"]
 
             # Return results
                 embed.description = f"Current GLAARG-VEC status for this call sign:"
-                embed.add_field(name=f"**Name**", value=f"{vePreferredName}")
+                embed.add_field(name=f"**Name**", value=f"{veFullName} ({vePreferredName})")
                 embed.add_field(name=f"**VE Number**", value=f"{veNumber}")
                 embed.add_field(name=f"**Call Sign**", value=f"{veCallResults}")
                 embed.add_field(name=f"**VE Since**", value=f"{veApprovedDate}")
