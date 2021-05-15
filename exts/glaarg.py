@@ -43,7 +43,7 @@ class GLAARG(commands.Cog):
             
             
             if 'veCallSign' not in veCallData:
-                embed.description = f"No results found for {veCall}.  Please veriy and try again."
+                embed.description = f"No results found for {veCall}.  Please verify and try again."
                 embed.title = f"Results for {veCall}"
                 embed.colour = discord.Colour.gold()
                 
@@ -150,7 +150,7 @@ class GLAARG(commands.Cog):
         return
 
 
-    @commands.command(name="sessions", aliases=["ses", "session", "listing"], category=cmn.cat.lookup)
+    @commands.command(name="sessions", aliases=["ses", "session"], category=cmn.cat.lookup)
     async def _stats_lookup(self, ctx: commands.Context, veCallSign: str = ""):
         """Gets listing of sessions for a given call sign"""
         with ctx.typing():
@@ -181,6 +181,65 @@ class GLAARG(commands.Cog):
                 embed.title = f"***Error***"
 
             await ctx.send(embed=embed)
+
+
+    @commands.command(name="listing", aliases=["l","list"], category=cmn.cat.lookup)
+    async def _session_listing_lookup(self, ctx: commands.Context, sessionManager = ""):
+        """Gets listing of upcoming GLAARG sessions publicly listed on HamStudy"""
+        with ctx.typing():
+            embed = cmn.embed_factory(ctx)
+
+            if sessionManager == '':
+                async with self.session.get(f"https://beta.ham.study/api/v1/sessions?vec=lagroup&type=all") as resp:
+                    if resp.status != 200:
+                        raise cmn.BotHTTPError(resp)
+                    vecSessions = json.loads(await resp.read())
+                embed.title = f"Next 10 GLAARG sessions."
+                embed.colour = discord.Colour.gold()
+                embed.description = f""
+
+                i=0
+                for session in vecSessions:
+                    sessionDate = datetime.date(datetime.strptime(session['date'], '%Y-%m-%dT%H:%M:%S.%fZ'))
+                    sessionTitle = session['summary']
+                    sessionOnline = session['online_session']
+                    sessionTimeZone = session['time_zone']
+                    sessionMaxApplicants = session['max_participants']
+                    sessionFull = session['isFull']
+                    sessionManager = session['sessionCall']
+                    if i<10:
+                        embed.add_field(name=f"**{sessionManager}** - {sessionDate}", value=f"Max {sessionMaxApplicants} applicants\r\n{sessionTitle}")
+                        i=i+1
+                await ctx.send(embed=embed)
+            else:
+                async with self.session.get(f"https://beta.ham.study/api/v1/sessions?vec=lagroup&type=all&call={sessionManager}") as resp:
+                    if resp.status != 200:
+                        raise cmn.BotHTTPError(resp)
+                    sessionManagerSessions = json.loads(await resp.read())
+                embed.title = f"Next sessions for {sessionManager}."
+                embed.colour = discord.Colour.gold()
+                embed.description = f""
+
+                i=0
+                for session in sessionManagerSessions:
+                    sessionDate = datetime.date(datetime.strptime(session['date'], '%Y-%m-%dT%H:%M:%S.%fZ'))
+                    sessionTitle = session['summary']
+                    sessionOnline = str(session['online_session'])
+                    sessionTimeZone = session['time_zone']
+                    sessionMaxApplicants = session['max_participants']
+                    sessionFull = session['isFull']
+                    sessionManager = session['sessionCall']
+                    
+                    if sessionOnline == 'True':
+                        embed.add_field(name=f"**{sessionDate} - Remote**", value=f"{sessionTitle}")
+                    if sessionOnline == 'False':
+                        embed.add_field(name=f"**{sessionDate} - Local**", value=f"{sessionTitle}")
+                    # embed.add_field(name=f"online: {sessionOnline}",value=f"h")
+                await ctx.send(embed=embed)
+
+
+######## ABOVE CODE FOR SESSION LISTING IS NOT COMPLETE #######
+
 
 
  
