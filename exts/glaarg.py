@@ -185,7 +185,7 @@ class GLAARG(commands.Cog):
 
     @commands.command(name="listing", aliases=["l","list"], category=cmn.cat.lookup)
     async def _session_listing_lookup(self, ctx: commands.Context, sessionManager = ""):
-        """Gets listing of upcoming GLAARG sessions publicly listed on HamStudy"""
+        """Gets listing of upcoming GLAARG sessions publicly listed on HamStudy. Use alone or with a session manager callsign"""
         with ctx.typing():
             embed = cmn.embed_factory(ctx)
 

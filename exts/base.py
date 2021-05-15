@@ -24,7 +24,7 @@ import data.options as opt
 
 class QrmHelpCommand(commands.HelpCommand):
     def __init__(self):
-        super().__init__(command_attrs={"help": "Shows help about qrm or a command", "aliases": ["h"]})
+        super().__init__(command_attrs={"help": "Shows help about GLAARGBot or a command", "aliases": ["h"]})
         self.verify_checks = True
 
     async def get_bot_mapping(self):
@@ -53,14 +53,14 @@ class QrmHelpCommand(commands.HelpCommand):
 
     async def send_error_message(self, error):
         embed = cmn.embed_factory(self.context)
-        embed.title = "qrm Help Error"
+        embed.title = "GLAARGBot Help Error"
         embed.description = error
         embed.colour = cmn.colours.bad
         await self.context.send(embed=embed)
 
     async def send_bot_help(self, mapping):
         embed = cmn.embed_factory(self.context)
-        embed.title = "qrm Help"
+        embed.title = "GLAARGBot Help"
         embed.description = (f"For command-specific help and usage, use `{opt.display_prefix}help [command name]`."
                              " Many commands have shorter aliases.")
         mapping = await mapping
@@ -198,7 +198,7 @@ class BaseCog(commands.Cog):
     @commands.check(cmn.check_if_owner)
     async def _echo(self, ctx: commands.Context,
                     channel: Union[cmn.GlobalChannelConverter, commands.UserConverter], *, msg: str):
-        """Sends a message in a channel as qrm. Accepts channel/user IDs/mentions.
+        """Sends a message in a channel as GLAARGBot. Accepts channel/user IDs/mentions.
         Channel names are current-guild only.
         Does not work with the ID of the bot user."""
         if isinstance(channel, discord.ClientUser):
